@@ -1,4 +1,4 @@
-import { types, getSnapshot } from "mobx-state-tree";
+import { types, getSnapshot, unprotect, protect } from "mobx-state-tree";
 
 // Entities and Their Many Names
 
@@ -38,6 +38,8 @@ import { types, getSnapshot } from "mobx-state-tree";
 // Null saftey (types.optional)
 //   - types.optional(types.typeDeclaration, defaultValue);
 
+// snapshots
+
 // Summary:
 //   1. MST is MobX with type saftey and the use of interfaces for entities instead of classes
 //   2. Manage state outside of the view (Conmponent) and without the need of a class entity
@@ -59,7 +61,7 @@ const Author = types.model({
 // Tree Model| The Abstraction / Mix of Interface and Implementation
 const Todo = types
   .model({
-    id: types.identifier,
+    id: types.identifierNumber,
     task: types.string,
     author: Author,
     completed: types.boolean,
@@ -78,6 +80,7 @@ const Todo = types
 // Root Model Store
 const RootStore = types.model({
   authors: types.map(Author),
+  todos: types.optional(types.map(Todo), {}),
 });
 
 //  Objects
@@ -88,17 +91,35 @@ const authorObject = {
   fname: "Kweayon",
 };
 
+const todoObject = {
+  id: 1101,
+  task: "Finish first MobX State Tree tutorial!",
+  author: authorObject,
+  completed: false,
+};
+
 // Tree Nodes
 
 // Tree Node | The Instantiation
-const auth1 = Author.create(authorObject);
-
-// Tree Node | The Instantiation
 const todo1 = Todo.create({
-  id: "1101",
+  id: 1101,
   task: "Finish first MobX State Tree tutorial!",
-  author: auth1,
+  author: authorObject,
   completed: false,
 });
 
+// Print Snapshot
+
 console.log(getSnapshot(todo1));
+
+// Tree Node store
+const store = RootStore.create({});
+
+unprotect(store);
+
+store.authors.put(authorObject);
+store.todos.put(todoObject);
+
+// protect(store);
+
+console.log(store.todos.get("1101")?.task);
