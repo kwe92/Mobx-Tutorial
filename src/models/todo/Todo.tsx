@@ -23,9 +23,14 @@ import { types, getSnapshot } from "mobx-state-tree";
 //   1. The instantiation of a Tree Model
 //   2. How MST defines its interfaces / classes
 //   3. Main Methods:
-//   3.1: .model({}) = Member variable type definitions
-//   3.2: .views({}) = Derivation processes | get getter computed variable / value as a derivative of state that typically returns a value
-//   3.3: .actions({}) = Set state actions Methods / Functions | Ussually does not return a value
+//      3.1: .model({}) = Member variable type definitions
+//      3.2: .views({self => ({})})
+//          3.2a: Derivation processes get function (getter computed variable / value )
+//                A derivative of state that typically returns a value
+//      3.3: .actions({self => ({})})
+//          3.3a: Set state actions Methods / Functions
+//                Ussually does not return a value]
+//          3.3b: accepts a callback  parameter is self keyword
 
 // types Namespace
 //   - A namespace of types for MobX and Typescript
@@ -42,6 +47,8 @@ import { types, getSnapshot } from "mobx-state-tree";
 //   1. Todo
 //   2. Author
 
+// Tree Models
+
 // Tree Model | The Abstraction / Mix of Interface and Implementation
 const Author = types.model({
   id: types.identifier,
@@ -50,18 +57,38 @@ const Author = types.model({
 });
 
 // Tree Model| The Abstraction / Mix of Interface and Implementation
-const Todo = types.model({
-  id: types.identifier,
-  task: types.string,
-  author: Author,
-  completed: types.boolean,
+const Todo = types
+  .model({
+    id: types.identifier,
+    task: types.string,
+    author: Author,
+    completed: types.boolean,
+  })
+  .actions((self) => ({
+    toggleComplete() {
+      self.completed = !self.completed;
+    },
+    edit(newTask: string) {
+      if (newTask) {
+        self.task = newTask;
+      }
+    },
+  }));
+
+// Root Model Store
+const RootStore = types.model({
+  authors: types.map(Author),
 });
 
-// Author Object: Passed to Author.create()
+//  Objects
+
+// Author Object: Passed to Author.create() creating an instance of the Tree Model (Tree Node)
 const authorObject = {
   id: "1101",
   fname: "Kweayon",
 };
+
+// Tree Nodes
 
 // Tree Node | The Instantiation
 const auth1 = Author.create(authorObject);
