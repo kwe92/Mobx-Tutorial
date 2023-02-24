@@ -1,11 +1,7 @@
 import React from "react";
-
-const App = (props:{}) => {
-	return (
-		<h1 style={{color: "lightblue"}}>
-			APP
-		</h1>
-	)
+import Counter from "./components/counter/Counter";
+const App = (props: {}) => {
+  return <Counter />;
 };
 
 export default App;

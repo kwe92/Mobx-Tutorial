@@ -74,6 +74,8 @@ var todo1 = Todo.create({
 console.log((0, mobx_state_tree_1.getSnapshot)(todo1));
 // Tree Node store
 var store = RootStore.create({});
+// Apply Snapshot Before store is used
+(0, mobx_state_tree_1.applySnapshot)(store, {});
 // Update state via .actions function
 store.addAuthor(authorObject);
 store.addTodo(todoObject);
