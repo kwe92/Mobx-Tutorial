@@ -120,9 +120,6 @@ const RootStore = types
     },
   }));
 
-// Apply Snapshot Before store is used
-applySnapshot(RootStore);
-
 //  Objects
 
 // Author Object: Passed to Author.create() creating an instance of the Tree Model (Tree Node)
@@ -154,6 +151,9 @@ console.log(getSnapshot(todo1));
 
 // Tree Node store
 const store = RootStore.create({});
+
+// Apply Snapshot Before store is used
+applySnapshot(store, {});
 
 // Update state via .actions function
 
