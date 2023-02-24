@@ -49,6 +49,18 @@ import { types, getSnapshot, unprotect, protect } from "mobx-state-tree";
 //   1. Todo
 //   2. Author
 
+interface AuthorInterface {
+  id: string;
+  fname: string;
+  lname?: string;
+}
+
+interface TodoInterface {
+  id: number;
+  task: string;
+  author: AuthorInterface;
+  completed: boolean;
+}
 // Tree Models
 
 // Tree Model | The Abstraction / Mix of Interface and Implementation
@@ -78,15 +90,32 @@ const Todo = types
   }));
 
 // Root Model Store
-const RootStore = types.model({
-  authors: types.map(Author),
-  todos: types.optional(types.map(Todo), {}),
-});
+const RootStore = types
+  .model({
+    authors: types.map(Author),
+    todos: types.optional(types.map(Todo), {}),
+  })
+  .actions((self) => ({
+    addAuthor(author: AuthorInterface, id?: string) {
+      if (id) {
+        self.authors.set(id, author);
+      } else {
+        self.authors.put(author);
+      }
+    },
+    addTodo(todo: TodoInterface, id?: string) {
+      if (id) {
+        self.todos.set(id, todo);
+      } else {
+        self.todos.put(todo);
+      }
+    },
+  }));
 
 //  Objects
 
 // Author Object: Passed to Author.create() creating an instance of the Tree Model (Tree Node)
-const authorObject = {
+const authorObject: AuthorInterface = {
   id: "1101",
   fname: "Kweayon",
 };
@@ -115,11 +144,20 @@ console.log(getSnapshot(todo1));
 // Tree Node store
 const store = RootStore.create({});
 
-unprotect(store);
+// Update state via .actions function
 
-store.authors.put(authorObject);
-store.todos.put(todoObject);
+store.addAuthor(authorObject);
+
+store.addTodo(todoObject);
+
+console.log(store.authors.get("1101"));
+
+// I dont think this is recommended in typescript
+// unprotect(store);
+
+// store.authors.put(authorObject);
+// store.todos.put(todoObject);
 
 // protect(store);
 
-console.log(store.todos.get("1101")?.task);
+// console.log(store.todos.get("1101")?.task);
