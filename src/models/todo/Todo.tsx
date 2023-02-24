@@ -1,4 +1,10 @@
-import { types, getSnapshot, unprotect, protect } from "mobx-state-tree";
+import {
+  types,
+  getSnapshot,
+  unprotect,
+  protect,
+  applySnapshot,
+} from "mobx-state-tree";
 
 // Entities and Their Many Names
 
@@ -39,6 +45,8 @@ import { types, getSnapshot, unprotect, protect } from "mobx-state-tree";
 //   - types.optional(types.typeDeclaration, defaultValue);
 
 // snapshots
+//   - Should be applied at the store level
+//   - applySnapshot
 
 // Summary:
 //   1. MST is MobX with type saftey and the use of interfaces for entities instead of classes
@@ -111,6 +119,9 @@ const RootStore = types
       }
     },
   }));
+
+// Apply Snapshot Before store is used
+applySnapshot(RootStore);
 
 //  Objects
 
