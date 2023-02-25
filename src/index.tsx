@@ -3,11 +3,13 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AppGlobalTheme } from "./indexStyles";
 import CountStore from "./models/count/Count";
-import { applySnapshot, onSnapshot } from "mobx-state-tree";
+import { onSnapshot } from "mobx-state-tree";
 
 const store = CountStore.create({});
 
-store.addCount({ id: 1001, count: 0 });
+const countObj = { id: 1001, count: 0 };
+
+store.addCount(countObj);
 
 const ele = document.getElementById("root") as HTMLElement;
 
